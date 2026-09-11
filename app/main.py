@@ -76,7 +76,6 @@ app = FastAPI(
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 app.state.templates = templates
-<<<<<<< Updated upstream
  
 STATIC_CATEGORY = "/app/static/category"
 SOURCE_CATEGORY = "source_images"
@@ -96,9 +95,7 @@ if len(os.listdir(STATIC_CATEGORY)) <= 1:
             if os.path.isfile(src):
                 shutil.copy2(src, dst)
 
-# print("STATIC AFTER:", os.listdir(STATIC_CATEGORY))
-=======
->>>>>>> Stashed changes
+ 
 
 
 # Routers
