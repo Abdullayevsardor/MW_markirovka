@@ -3,6 +3,10 @@ from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_303_SEE_OTHER
 from sqlalchemy.orm import Session
 import os, uuid
+from pathlib import Path
+
+# app/routers/ui.py -> loyiha ildizi
+UPLOAD_DIR = Path(__file__).resolve().parent.parent.parent / "static" / "category"
 
 from app.db.session import get_db
 from app.models.category import Category
@@ -172,13 +176,13 @@ def admin_create_category(
         return RedirectResponse(url="/admin?token=ok&err=category_empty", status_code=HTTP_303_SEE_OTHER)
 
     # Papka mavjudligini tekshirish (Railway Volume uchun)
-    upload_dir = os.path.join("static", "category")
-    os.makedirs(upload_dir, exist_ok=True)
+    upload_dir = UPLOAD_DIR
+    upload_dir.mkdir(parents=True, exist_ok=True)
 
     # Fayl nomini yaratish
     ext = os.path.splitext(category_image.filename or "")[1].lower() or ".jpg"
     filename = f"{uuid.uuid4().hex}{ext}"
-    save_path = os.path.join(upload_dir, filename)
+    save_path = upload_dir / filename
 
     # Rasmni saqlash (shutil bilan xavfsizroq)
     try:

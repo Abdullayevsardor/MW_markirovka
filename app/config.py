@@ -9,6 +9,9 @@ class Settings(BaseSettings):
         extra="ignore"
     )
 
+    # prod | dev
+    ENV: str = "prod"
+
     # Railway uchun (agar mavjud bo‘lsa)
     DATABASE_URL: Optional[str] = None
 
@@ -19,18 +22,26 @@ class Settings(BaseSettings):
     DB_PORT: Optional[str] = "5432"
     DB_NAME: Optional[str] = None
 
+    # Celery/Redis (hozircha ishlatilmayapti)
+    REDIS_URL: str = "redis://redis:6379/0"
+
     SECRET_KEY: str
     ADMIN_PASSWORD: str
 
+    @property
+    def is_prod(self) -> bool:
+        return self.ENV.lower() in ("prod", "production")
 
     @property
-    def database_url(self):
-        # Railway bo‘lsa
+    def database_url(self) -> str:
+        # Railway bo‘lsa: postgres:// yoki postgresql:// keladi,
+        # ikkalasini ham psycopg3 drayveriga o‘tkazamiz.
         if self.DATABASE_URL:
-            return self.DATABASE_URL.replace(
-                "postgres://",
-                "postgresql+psycopg://"
-            )
+            url = self.DATABASE_URL
+            for prefix in ("postgresql+psycopg://", "postgresql://", "postgres://"):
+                if url.startswith(prefix):
+                    return "postgresql+psycopg://" + url[len(prefix):]
+            return url
 
         # Local bo‘lsa
         return (

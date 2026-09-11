@@ -1,4 +1,12 @@
 venv
+.venv
 __pycache__
+**/__pycache__
+*.pyc
 .git
+.gitignore
 .env
+zapas
+alembic
+*.txt.bak
+app/static/source_images
